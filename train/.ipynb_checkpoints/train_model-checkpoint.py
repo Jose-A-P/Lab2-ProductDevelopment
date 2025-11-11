@@ -59,22 +59,25 @@ alta_cardinalidad_transformer = Pipeline(steps=[
     ('target', TargetEncoder())
 ])
 
+def convert_to_str(x):
+    return x.astype(str)
+
 #Pipeline ordinales, usado en los dias para determinar el dia de la semana
 ordinales_transformer_1 = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('to_str', FunctionTransformer(lambda x: x.astype(str))),
+    ('to_str', FunctionTransformer(convert_to_str)),
     ('ordinal',OrdinalEncoder(categories=[ordinal_room_type]))
 ])
 
 ordinales_transformer_2 = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('to_str', FunctionTransformer(lambda x: x.astype(str))),
+    ('to_str', FunctionTransformer(convert_to_str)),
     ('ordinal',OrdinalEncoder(categories=[ordinal_assigned_room_type]))
 ])
 
 ordinales_transformer_3 = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('to_str', FunctionTransformer(lambda x: x.astype(str))),
+    ('to_str', FunctionTransformer(convert_to_str)),
     ('ordinal',OrdinalEncoder(categories=[ordinal_dia_semana]))
 ])
 
@@ -125,6 +128,6 @@ pipeline = Pipeline(steps=[
 pipeline.fit(X_train, y_train.values.ravel())
 
 #Exportando el modelo como joblib para ser utilizado por 
-final_model = pipeline.named_steps['classifier'] 
+final_model = pipeline
 filename = '/output/last_model.joblib'
 joblib.dump(final_model, filename)

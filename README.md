@@ -85,10 +85,12 @@ El modo API cuenta con dos endpoints, los cuales son `/predict` y `/metrics`
 ### ---/predict en modo API---
 Permite enviar un payload con los datos de cada observacion individual que se busque predecir. Estas deben de incluir el nombre de la columna y su valor.
 
-Para probar este modo se puede utilizar el notebook `test_predict_api.ipynb` del repositorio. Este prepara el payload utilizando una muestra aleatoria de `hotel_bookings.csv`. Al ejecutarlo el servidor devuelve un json con las predicciones para cada uno de los puntos.
+Para probar este modo se puede utilizar el notebook `test_predict_api.ipynb` del repositorio, luego de levantar el servidor. Este prepara el payload utilizando una muestra aleatoria de `hotel_bookings.csv`. Al ejecutarlo el servidor devuelve un json con las predicciones para cada uno de los puntos.
 
 ### ---/metrics en modo API---
-Solicita al servidor las metricas del modelo, siendo:
+Para probar este modo se puede utilizar el notebook `test_metrics_api.ipynb` del repositorio, luego de levantar el servidor. Este solicita las metricas del modelo y las imprime en pantall.
+
+Las metricas son:
 - "model": Indica el modelo entrenado. Para esta version unicamente se regresa RandomForest ya que es el modelo de base.
 - "accuracy": regresar la precision del ultimo modelo entrenado. Actualizado al entrenar el modelo con el contenedor `model-train`
 - "predictions_served": Muestra la cantidad de predicciones generadas con el contenedor `model-serve`. Actualizado tanto en modo batch como API.

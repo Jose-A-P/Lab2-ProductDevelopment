@@ -5,7 +5,9 @@ import optuna
 import joblib
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+from datetime import date
+import json
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.compose import ColumnTransformer
@@ -114,7 +116,7 @@ def objective(trial):
 
     # Validación cruzada
     cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
-    scores = cross_val_score(pipeline, X, y.values.ravel(), cv=cv, scoring=params['optimizer']['metric'])
+    scores = cross_val_score(pipeline, X_train, y_train.values.ravel(), cv=cv, scoring=params['optimizer']['metric'])
     return scores.mean()
 
 study = optuna.create_study(direction=params['optimizer']['direction'])
@@ -127,7 +129,19 @@ pipeline = Pipeline(steps=[
 
 pipeline.fit(X_train, y_train.values.ravel())
 
-#Exportando el modelo como joblib para ser utilizado por 
+y_preds = pipeline.predict(X_test)
+accuracy_test = round(accuracy_score(y_preds, y_test), 4)
+
+json_data = {"model": "RandomForestRegressor", 
+         "accuracy":accuracy_test, 
+         "predictions_served": 0,
+         "avg_response_time_seconds": 0,
+         "last_training": date.today().strftime("%Y-%m-%d")}
+
+with open("/output/metrics.json", mode="w", encoding="utf-8") as write_file:
+    json.dump(json_data, write_file)
+        
+#Exportando el modelo como joblib para ser utilizado por el serve
 final_model = pipeline
 filename = '/output/last_model.joblib'
 joblib.dump(final_model, filename)

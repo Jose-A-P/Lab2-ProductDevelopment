@@ -47,9 +47,12 @@ def predict(payload: dict = Body(...)):
 
 @app.post("/metrics")
 def metrics():
-    with open("/app/model/metrics.json", 'r') as file:
+    try:
+        with open("/app/model/metrics.json", 'r') as file:
             data = json.load(file)
-    return data
+        return data
+    except HTTPException:
+        raise
 
 def batch_mode():
     start_time = time.time()
